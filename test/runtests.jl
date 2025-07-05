@@ -1,6 +1,7 @@
 using Test
 using ThinPlateSplines
 
+
 @testset "tps generation" begin
     x1 = [0.0 1.0 
     1.0 0.0

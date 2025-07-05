@@ -34,12 +34,15 @@ end
 
 # tps_basis is applied to the result of a norm which is either positive or zero
 # using ifelse is faster than the (? x:y) notation
-tps_basis(r::T) where {T}  = ifelse(r < eps(r), zero(T), r*r*log(r))
+"""
+U(r) = r^2 log(r)
+"""
+U(r::T) where {T}  = ifelse(r < eps(r), zero(T), r*r*log(r))
 
-my_norm(a) = sqrt(sum(a.^2))
+_norm(a) = sqrt(sum(a.^2))
 
 # x: matrix of size KxD
-tps_kernel(x) = [tps_basis(my_norm(x[i,:] - x[j,:])) for i in axes(x)[1], j=axes(x)[1]]
+tps_kernel(x) = [U(_norm(x[i,:] - x[j,:])) for i in axes(x)[1], j=axes(x)[1]]
 
 """
 	tps_solve(x,y,λ,compute_affine=true)
@@ -104,20 +107,21 @@ Yet it can be used to transform other mathematical structures rather than points
 	`x2`: coordinates of points to be deformed.
 	`tps`: the thin-plate spline structure of type `ThinPlateSpline` defining the deformation.
 """
-function tps_deform(x2::AbstractMatrix{T}, tps::ThinPlateSpline) where {T}
-    x1,d,c = tps.x1,tps.d,tps.c
+function tps_deform(x2::AbstractMatrix{FT}, tps::ThinPlateSpline) where {FT}
+  (; x1, d, c) = tps
 	d==[] && throw(ArgumentError("Affine component not available; run tps_solve with compute_affine=true."))
-	D = size(x2, 2)
-    all_homo_z = hcat(ones(T, size(x2,1)), x2)
-    # calculate sum of squares. Note that the summation is done outside the abs2
+	D = size(tps.Y, 2) - 1
+  T = hcat(ones(FT, size(x2,1)), x2)
+  # calculate sum of squares. Note that the summation is done outside the abs2
 	# it may be useful to join the terms below, but this seems a little harder than first thought
-    @tullio sumsqr[k,j] := abs2(all_homo_z[k,m+1] .- x1[j,m])
-    @tullio yt[i,j] := (tps_basis(sqrt(sumsqr[i,k])) * c[k,j+1]) (j in 1:D)
-    @tullio yt[i,j] += d[l,j+1] * all_homo_z[i,l] 
-
+  
+  # z = T d + K c
+  @tullio sumsqr[k,j] := abs2(T[k,m+1] .- x1[j,m])
+  @tullio yt[i,j] := (U(sqrt(sumsqr[i,k])) * c[k,j+1]) (j in 1:D)
+  @tullio yt[i,j] += d[l,j+1] * T[i,l] 
 	# it would save some memory and possibly make it a bit faster, if the order of dimensions is changed for x and yt due to cache utilization. 
 	# but the advantage is relatively minor (10%?) since @tullio seems to take care of this as well as possible
-    return yt
+  return yt
 end
 
 """
