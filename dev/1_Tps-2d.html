@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>1. SpatRaster – ThinPlateSplines</title>
+<title>[1:nlon, 1:nlat] – ThinPlateSplines</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -206,12 +206,12 @@ window.onload = function () {
 
 
 <link rel="stylesheet" href="_static/style.css">
-<meta property="og:title" content="1. SpatRaster – ThinPlateSplines">
-<meta property="og:description" content="">
+<meta property="og:title" content="[1:nlon, 1:nlat] – ThinPlateSplines">
+<meta property="og:image" content="1_Tps-2d_files/figure-html/cell-7-output-2.svg">
 <meta property="og:site_name" content="ThinPlateSplines">
-<meta name="twitter:title" content="1. SpatRaster – ThinPlateSplines">
-<meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[1:nlon, 1:nlat] – ThinPlateSplines">
+<meta name="twitter:image" content="1_Tps-2d_files/figure-html/cell-7-output-2.svg">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-sidebar floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -413,7 +413,7 @@ window.onload = function () {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./1-SpatRaster.html"><span class="chapter-title">1. SpatRaster</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./1_Tps-2d.html"><span class="chapter-title">[1:nlon, 1:nlat]</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -440,7 +440,7 @@ window.onload = function () {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./1-SpatRaster.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">1. SpatRaster</span></a>
+  <a href="./1_Tps-2d.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">[1:nlon, 1:nlat]</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -458,7 +458,8 @@ window.onload = function () {
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#spatraster" id="toc-spatraster" class="nav-link active" data-scroll-target="#spatraster">SpatRaster</a></li>
+  <li><a href="#案例" id="toc-案例" class="nav-link active" data-scroll-target="#案例">案例</a></li>
+  <li><a href="#栅格插值结果" id="toc-栅格插值结果" class="nav-link" data-scroll-target="#栅格插值结果">栅格插值结果</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/jl-pkgs/ThinPlateSplines.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -468,7 +469,7 @@ window.onload = function () {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">1. SpatRaster</span></h1>
+<h1 class="title"><span class="chapter-title">[1:nlon, 1:nlat]</span></h1>
 </div>
 
 
@@ -485,11 +486,176 @@ window.onload = function () {
 </header>
 
 
-<section id="spatraster" class="level1">
-<h1>SpatRaster</h1>
-<p><code>SpatRaster</code> is a simple spatial raster with WGS84 projection, abbreviated as <code>rast</code>.</p>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre><code>2</code></pre>
+<div id="29b77900" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">ThinPlateSplines</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">SpatRasters</span>, <span class="bu">Ipaper</span>, <span class="bu">DataFrames</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span>, <span class="bu">MakieLayers</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">make_rast</span>(; b<span class="op">::</span><span class="dt">bbox</span>=<span class="fu">bbox</span>(<span class="fl">70</span>, <span class="fl">15</span>, <span class="fl">140</span>, <span class="fl">55</span>), cellsize<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  lon, lat <span class="op">=</span> <span class="fu">bbox2dims</span>(b; cellsize)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  nlon, nlat <span class="op">=</span> <span class="fu">length</span>(lon), <span class="fu">length</span>(lat)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rast</span>(<span class="fu">zeros</span>(nlon, nlat), b)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ra <span class="op">=</span> <span class="fu">make_rast</span>(; cellsize<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
+  A        : Matrix{Float64} | (140, 80) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">0.09 Mb</span>
+  b        : bbox(70.0, 15.0, 140.0, 55.0)
+  cellsize : (0.5, 0.5)
+  lon, lat : 70.25:0.5:139.75, 54.75:-0.5:15.25
+  time     : nothing
+  bands    : nothing
+  nodata   : nothing</pre>
+</div>
+</div>
+</div>
+<div id="4c6a6780" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">meshgrid</span>(x, y)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># X = repeat(x', length(y), 1)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Y = repeat(y, 1, length(x))</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  X <span class="op">=</span> <span class="fu">repeat</span>(x, <span class="fl">1</span>, <span class="fu">length</span>(y))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  Y <span class="op">=</span> <span class="fu">repeat</span>(y<span class="op">'</span>, <span class="fu">length</span>(x), <span class="fl">1</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  X, Y</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>lon, lat <span class="op">=</span> <span class="fu">st_dims</span>(ra)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>nlon, nlat, _ <span class="op">=</span> <span class="fu">size</span>(ra)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>X, Y <span class="op">=</span> <span class="fu">meshgrid</span>(lon, lat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>([70.25 70.25 … 70.25 70.25; 70.75 70.75 … 70.75 70.75; … ; 139.25 139.25 … 139.25 139.25; 139.75 139.75 … 139.75 139.75], [54.75 54.25 … 15.75 15.25; 54.75 54.25 … 15.75 15.25; … ; 54.75 54.25 … 15.75 15.25; 54.75 54.25 … 15.75 15.25])</code></pre>
+</div>
+</div>
+<div id="5a2d6050" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>indir <span class="op">=</span> <span class="st">"</span><span class="sc">$</span>(<span class="pp">@__DIR__</span>)<span class="st">/../../data"</span> <span class="op">|&gt;</span> abspath</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>st <span class="op">=</span> <span class="fu">deserialize</span>(<span class="st">"</span><span class="sc">$</span>indir<span class="st">/st_met2481"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fu">nrow</span>(st)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> [st.lon st.lat]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>2481×2 Matrix{Float64}:
+ 122.367  53.4667
+ 122.367  53.4667
+ 124.717  52.35
+ 123.567  52.0333
+ 124.333  51.7
+ 126.65   51.7167
+ 120.183  50.25
+ 121.517  50.7833
+ 121.683  50.4833
+ 124.117  50.4
+ 123.733  50.5833
+ 127.45   50.25
+ 117.433  49.5667
+   ⋮      
+ 110.333  19.7
+ 110.1    19.3667
+ 110.467  19.2333
+ 110.75   19.6167
+ 109.167  18.75
+ 109.517  18.7667
+ 109.7    18.65
+ 109.517  18.2333
+ 110.367  18.8
+ 110.033  18.5
+ 112.333  16.8333
+ 111.617  16.5333</code></pre>
+</div>
+</div>
+<section id="案例" class="level2">
+<h2 class="anchored" data-anchor-id="案例">案例</h2>
+<ul>
+<li><code>x1</code>: [nsite, [lon, lat, alt, NDVI]], Matrix</li>
+<li><code>y</code>: precipitation
+<ul>
+<li>Vector: 1个时刻的降水</li>
+<li>Matrix: 所有时刻的降水，[nstie, 24*31]</li>
+</ul></li>
+</ul>
+<div id="6aa3a999" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_seed</span>(<span class="fl">1</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ntime <span class="op">=</span> <span class="fl">24</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="fu">repeat</span>(st.alt, outer<span class="op">=</span>(<span class="fl">1</span>, ntime)) <span class="co"># [nsite, ntime], pseudo data</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>λ <span class="op">=</span> <span class="fl">1.0</span> <span class="co"># 小: 局部细节; 大: 空间上更加平缓</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> tps <span class="op">=</span> <span class="fu">tps_solve</span>(x, y, λ)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> R <span class="op">=</span> <span class="fu">tps_deform</span>(x, tps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  5.914177 seconds (58.02 M allocations: 2.543 GiB, 9.12% gc time, 60.20% compilation time)
+  2.936317 seconds (1.68 M allocations: 130.812 MiB, 1.81% gc time, 37.36% compilation time)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>2481×24 Matrix{Float64}:
+ 309.141    309.141    309.141    …  309.141    309.141    309.141
+ 309.141    309.141    309.141       309.141    309.141    309.141
+ 367.566    367.566    367.566       367.566    367.566    367.566
+ 510.639    510.639    510.639       510.639    510.639    510.639
+ 459.505    459.505    459.505       459.505    459.505    459.505
+ 179.13     179.13     179.13     …  179.13     179.13     179.13
+ 620.704    620.704    620.704       620.704    620.704    620.704
+ 844.187    844.187    844.187       844.187    844.187    844.187
+ 799.73     799.73     799.73        799.73     799.73     799.73
+ 379.295    379.295    379.295       379.295    379.295    379.295
+ 446.187    446.187    446.187    …  446.187    446.187    446.187
+ 167.374    167.374    167.374       167.374    167.374    167.374
+ 621.41     621.41     621.41        621.41     621.41     621.41
+   ⋮                              ⋱                        
+  39.2298    39.2298    39.2298       39.2298    39.2298    39.2298
+ 100.238    100.238    100.238    …  100.238    100.238    100.238
+  42.4831    42.4831    42.4831       42.4831    42.4831    42.4831
+  11.1633    11.1633    11.1633       11.1633    11.1633    11.1633
+ 142.462    142.462    142.462       142.462    142.462    142.462
+ 173.832    173.832    173.832       173.832    173.832    173.832
+ 131.018    131.018    131.018    …  131.018    131.018    131.018
+  54.1745    54.1745    54.1745       54.1745    54.1745    54.1745
+  41.3448    41.3448    41.3448       41.3448    41.3448    41.3448
+  55.8383    55.8383    55.8383       55.8383    55.8383    55.8383
+   1.31333    1.31333    1.31333       1.31333    1.31333    1.31333
+  -4.4104    -4.4104    -4.4104   …   -4.4104    -4.4104    -4.4104</code></pre>
+</div>
+</div>
+</section>
+<section id="栅格插值结果" class="level2">
+<h2 class="anchored" data-anchor-id="栅格插值结果">栅格插值结果</h2>
+<div id="6b6ad0e3" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [X[<span class="op">:</span>] Y[<span class="op">:</span>]]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> _A <span class="op">=</span> <span class="fu">tps_deform</span>(data, tps)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">reshape</span>(_A, nlon, nlat, ntime)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ra_out <span class="op">=</span> <span class="fu">rast</span>(A, ra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  8.421309 seconds (13 allocations: 214.397 MiB, 3.48% gc time)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-blue-fg">SpatRaster{Float64}: </span><span style="text-decoration:underline" class="ansi-green-fg">Raster</span>
+  A        : Array{Float64, 3} | (140, 80, 24) | <span style="font-weight:bold;text-decoration:underline" class="ansi-blue-fg">2.05 Mb</span>
+  b        : bbox(70.0, 15.0, 140.0, 55.0)
+  cellsize : (0.5, 0.5)
+  lon, lat : 70.25:0.5:139.75, 54.75:-0.5:15.25
+  time     : nothing
+  bands    : nothing
+  nodata   : nothing</pre>
+</div>
+</div>
+</div>
+<div id="6fae6837" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">imagesc</span>(lon, lat, A[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-yellow-fg ansi-bold">┌ </span><span class="ansi-yellow-fg ansi-bold">Warning: </span>Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.
+
+<span class="ansi-yellow-fg ansi-bold">└ </span><span class="ansi-bright-black-fg">@ Makie ~/.julia/packages/Makie/UjJJY/src/scenes.jl:238</span>
+</pre>
+</div>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+<figure class="figure">
+<p><img src="1_Tps-2d_files/figure-html/cell-7-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>

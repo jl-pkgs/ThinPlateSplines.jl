@@ -20,13 +20,33 @@
     ]
   },
   {
-    "objectID": "1-SpatRaster.html",
-    "href": "1-SpatRaster.html",
-    "title": "1. SpatRaster",
+    "objectID": "1_Tps-2d.html",
+    "href": "1_Tps-2d.html",
+    "title": "[1:nlon, 1:nlat]",
     "section": "",
-    "text": "SpatRaster\nSpatRaster is a simple spatial raster with WGS84 projection, abbreviated as rast.\n1 + 1\n2",
+    "text": "案例\nset_seed(1)\nntime = 24\ny = repeat(st.alt, outer=(1, ntime)) # [nsite, ntime], pseudo data\nλ = 1.0 # 小: 局部细节; 大: 空间上更加平缓\n\n@time tps = tps_solve(x, y, λ)\n@time R = tps_deform(x, tps)\n\n  5.914177 seconds (58.02 M allocations: 2.543 GiB, 9.12% gc time, 60.20% compilation time)\n  2.936317 seconds (1.68 M allocations: 130.812 MiB, 1.81% gc time, 37.36% compilation time)\n\n\n2481×24 Matrix{Float64}:\n 309.141    309.141    309.141    …  309.141    309.141    309.141\n 309.141    309.141    309.141       309.141    309.141    309.141\n 367.566    367.566    367.566       367.566    367.566    367.566\n 510.639    510.639    510.639       510.639    510.639    510.639\n 459.505    459.505    459.505       459.505    459.505    459.505\n 179.13     179.13     179.13     …  179.13     179.13     179.13\n 620.704    620.704    620.704       620.704    620.704    620.704\n 844.187    844.187    844.187       844.187    844.187    844.187\n 799.73     799.73     799.73        799.73     799.73     799.73\n 379.295    379.295    379.295       379.295    379.295    379.295\n 446.187    446.187    446.187    …  446.187    446.187    446.187\n 167.374    167.374    167.374       167.374    167.374    167.374\n 621.41     621.41     621.41        621.41     621.41     621.41\n   ⋮                              ⋱                        \n  39.2298    39.2298    39.2298       39.2298    39.2298    39.2298\n 100.238    100.238    100.238    …  100.238    100.238    100.238\n  42.4831    42.4831    42.4831       42.4831    42.4831    42.4831\n  11.1633    11.1633    11.1633       11.1633    11.1633    11.1633\n 142.462    142.462    142.462       142.462    142.462    142.462\n 173.832    173.832    173.832       173.832    173.832    173.832\n 131.018    131.018    131.018    …  131.018    131.018    131.018\n  54.1745    54.1745    54.1745       54.1745    54.1745    54.1745\n  41.3448    41.3448    41.3448       41.3448    41.3448    41.3448\n  55.8383    55.8383    55.8383       55.8383    55.8383    55.8383\n   1.31333    1.31333    1.31333       1.31333    1.31333    1.31333\n  -4.4104    -4.4104    -4.4104   …   -4.4104    -4.4104    -4.4104",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>1. SpatRaster</span>"
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>[1:nlon, 1:nlat]</span>"
+    ]
+  },
+  {
+    "objectID": "1_Tps-2d.html#案例",
+    "href": "1_Tps-2d.html#案例",
+    "title": "[1:nlon, 1:nlat]",
+    "section": "",
+    "text": "x1: [nsite, [lon, lat, alt, NDVI]], Matrix\ny: precipitation\n\nVector: 1个时刻的降水\nMatrix: 所有时刻的降水，[nstie, 24*31]",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>[1:nlon, 1:nlat]</span>"
+    ]
+  },
+  {
+    "objectID": "1_Tps-2d.html#栅格插值结果",
+    "href": "1_Tps-2d.html#栅格插值结果",
+    "title": "[1:nlon, 1:nlat]",
+    "section": "栅格插值结果",
+    "text": "栅格插值结果\n\ndata = [X[:] Y[:]]\n@time _A = tps_deform(data, tps)\nA = reshape(_A, nlon, nlat, ntime)\nra_out = rast(A, ra)\n\n  8.421309 seconds (13 allocations: 214.397 MiB, 3.48% gc time)\n\n\n\nSpatRaster{Float64}: Raster\n  A        : Array{Float64, 3} | (140, 80, 24) | 2.05 Mb\n  b        : bbox(70.0, 15.0, 140.0, 55.0)\n  cellsize : (0.5, 0.5)\n  lon, lat : 70.25:0.5:139.75, 54.75:-0.5:15.25\n  time     : nothing\n  bands    : nothing\n  nodata   : nothing\n\n\n\n\nimagesc(lon, lat, A[:, :, 1])\n\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n\n└ @ Makie ~/.julia/packages/Makie/UjJJY/src/scenes.jl:238",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>[1:nlon, 1:nlat]</span>"
     ]
   },
   {
