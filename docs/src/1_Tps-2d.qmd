@@ -1,0 +1,66 @@
+```{julia}
+using ThinPlateSplines
+using SpatRasters, Ipaper, DataFrames
+using CairoMakie, MakieLayers
+
+function make_rast(; b::bbox=bbox(70, 15, 140, 55), cellsize=0.5)
+  lon, lat = bbox2dims(b; cellsize)
+  nlon, nlat = length(lon), length(lat)
+  rast(zeros(nlon, nlat), b)
+end
+
+# [1:nlon, 1:nlat]
+ra = make_rast(; cellsize=0.5)
+```
+
+```{julia}
+function meshgrid(x, y)
+  # X = repeat(x', length(y), 1)
+  # Y = repeat(y, 1, length(x))
+  X = repeat(x, 1, length(y))
+  Y = repeat(y', length(x), 1)
+  X, Y
+end
+
+lon, lat = st_dims(ra)
+nlon, nlat, _ = size(ra)
+X, Y = meshgrid(lon, lat)
+```
+
+```{julia}
+indir = "$(@__DIR__)/../../data" |> abspath
+st = deserialize("$indir/st_met2481")
+N = nrow(st)
+x = [st.lon st.lat]
+```
+
+## 案例
+
+- `x1`: [nsite, [lon, lat, alt, NDVI]], Matrix
+- `y`: precipitation
+  + Vector: 1个时刻的降水
+  + Matrix: 所有时刻的降水，[nstie, 24*31]
+
+```{julia}
+set_seed(1)
+ntime = 24
+y = repeat(st.alt, outer=(1, ntime)) # [nsite, ntime], pseudo data
+λ = 1.0 # 小: 局部细节; 大: 空间上更加平缓
+
+@time tps = tps_solve(x, y, λ)
+@time R = tps_deform(x, tps)
+```
+
+## 栅格插值结果
+
+```{julia}
+data = [X[:] Y[:]]
+@time _A = tps_deform(data, tps)
+A = reshape(_A, nlon, nlat, ntime)
+ra_out = rast(A, ra)
+```
+
+```{julia}
+imagesc(lon, lat, A[:, :, 1])
+```
+

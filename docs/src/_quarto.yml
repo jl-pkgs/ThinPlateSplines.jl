@@ -10,7 +10,7 @@ book:
     date: "2025-06-29"
     chapters:
         - index.md
-        - 1-SpatRaster.qmd
+        - 1_Tps-2d.qmd
         - Reference.md
 
     navbar: 
